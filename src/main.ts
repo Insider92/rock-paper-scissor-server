@@ -1,21 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
+import * as config from 'config';
 
-import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
+  const { serverPort, serverPrefix, nodeEnv } = config.get('server');
 
   const logger = app.get(Logger);
   app.useLogger(logger);
   app.flushLogs();
 
   // not required but always nice to have
-  app.setGlobalPrefix(configService.get('prefix'));
+  app.setGlobalPrefix(serverPrefix);
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
@@ -25,11 +25,11 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup(configService.get('prefix') + '/api', app, document);
+  SwaggerModule.setup(serverPrefix + '/api', app, document);
 
-  await app.listen(configService.get('port'));
-  logger.log(`Application listening on port ${configService.get('port')}`);
+  await app.listen(serverPort);
+  logger.log(`Application listening on port ${serverPort}`);
   logger.log(`Node Version: '${process.version}'`);
-  logger.log(`NODE_ENV: '${configService.get('NODE_ENV')}'`);
+  logger.log(`NODE_ENV: '${nodeEnv}'`);
 }
 bootstrap();
