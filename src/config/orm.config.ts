@@ -1,9 +1,16 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { databaseConfig } from './index';
 
 export const ormConfig: TypeOrmModuleOptions = {
-  type: databaseConfig.type,
-  database: databaseConfig.database,
+  type: 'mysql',
+  host: 'localhost',
+  port: 3307,
+  username: 'root',
+  password: 'password',
+  database: 'aerq',
+  synchronize: false,
+  name: 'default',
   entities: [`${__dirname}/../**/*.entity{.ts,.js}`],
-  synchronize: databaseConfig.synchronize,
+  migrations: ['dist/migrations/*{.ts,.js}'],
+  migrationsTableName: 'migrations_typeorm',
+  migrationsRun: true,
 };

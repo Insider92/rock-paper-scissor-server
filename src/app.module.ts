@@ -9,6 +9,8 @@ import { AppController } from './app.controller';
 import { loggerConfig, ormConfig } from './config';
 import { UserModule } from './module/user/user.module';
 import { AuthModule } from './module/auth/auth.module';
+import { MatchModule } from './module/match/match.module';
+import { ChoiceModule } from './module/choice/choice.module';
 
 @Module({
   imports: [
@@ -18,7 +20,10 @@ import { AuthModule } from './module/auth/auth.module';
     HttpModule,
     UserModule,
     AuthModule,
+    MatchModule,
+    ChoiceModule,
   ],
   controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}

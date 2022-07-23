@@ -47,6 +47,11 @@ The database ceases to exist as soon as the database connection is closed
 
 ## Assumptions 
 
+* A user can only have one game with an other spefic user at the same time
+* Only the game service is protected by auth
+* There is no possibilty to update a choice (sqlite inmemory can just be reset)
+* There is no possibilty to delete a choice (sqlite inmemory can just be reset)
+
 
 ## Swagger and OpenAPI
 
@@ -94,3 +99,7 @@ Match Entity
 Choices Entity
 CLI
 Computer Player
+better folder structure
+
+
+docker run --name demo-mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=aerq -d mysql:latest
