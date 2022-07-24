@@ -6,8 +6,8 @@ import { MatchEntity } from './entity/match.entity';
 import { MatchService } from './match.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([MatchEntity, ChoiceEntity])],
-    controllers: [MatchController],
-    providers: [MatchService],
-  })
+  imports: [TypeOrmModule.forFeature([MatchEntity, ChoiceEntity])],
+  controllers: [MatchController],
+  providers: [MatchService],
+})
 export class MatchModule {}

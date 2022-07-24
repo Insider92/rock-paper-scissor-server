@@ -38,7 +38,6 @@ export class MatchDto {
   @ApiProperty()
   challengedUser: UserEntity;
 
-
   @ApiProperty()
   @IsNotEmpty()
   challengerChoice: ChoiceEntity;

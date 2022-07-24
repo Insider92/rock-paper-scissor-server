@@ -25,7 +25,7 @@ export class MatchEntity extends AbstractOrmEntity {
   @Column({
     type: 'enum',
     enum: Result,
-    default: Result.TBD 
+    default: Result.TBD,
   })
   result: Result;
 

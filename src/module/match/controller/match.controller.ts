@@ -7,7 +7,7 @@ import { MatchService } from '../match.service';
 @Controller('v1/match')
 @ApiTags('match')
 export class MatchController {
-    constructor(private matchService: MatchService) {}
+  constructor(private matchService: MatchService) {}
 
   @Get()
   @ApiOperation({
@@ -23,7 +23,7 @@ export class MatchController {
   }
 
   @Post()
-  async Create(@Body() match: CreateMatchDto): Promise<MatchDto>{
+  async Create(@Body() match: CreateMatchDto): Promise<MatchDto> {
     const eventExists = await this.matchService.choiceExists(match);
     if (!eventExists)
       throw new HttpException(
