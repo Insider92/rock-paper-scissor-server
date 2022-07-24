@@ -4,7 +4,7 @@ import { ChoiceService } from '../choice.service';
 import { ChoiceDto } from '../dto/choice.dto';
 
 @Controller('v1/choice')
-@ApiTags('user')
+@ApiTags('choice')
 export class ChoiceController {
   constructor(private choiceService: ChoiceService) {}
 
@@ -16,10 +16,6 @@ export class ChoiceController {
     status: 200,
     type: ChoiceDto,
     isArray: true,
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized',
   })
   async GetAll(): Promise<ChoiceDto[]> {
     return await this.choiceService.getAll();

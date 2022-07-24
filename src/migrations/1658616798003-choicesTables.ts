@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function */
 import { ChoiceEntity } from 'src/module/choice/entity/choice.entity';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 

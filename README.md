@@ -47,10 +47,11 @@ The database ceases to exist as soon as the database connection is closed
 
 ## Assumptions 
 
-* A user can only have one game with an other spefic user at the same time
-* Only the game service is protected by auth
-* There is no possibilty to update a choice (sqlite inmemory can just be reset)
-* There is no possibilty to delete a choice (sqlite inmemory can just be reset)
+* A user can only have mulitple game with an other spefic user at the same time (Challenge some is POST / Challenge Answer is PUT with Match ID)
+* Only the core game service is protected by auth (match POST, match own, Match PUT) and user login
+* There is no route to create a choice (default choices will be set with migration & could implemented in the future with POST request)
+* There is no route to update a choice (could implemented in the future with PUT request)
+* There is no route to delete a choice (could implemented in the future with DELETE request)
 
 
 ## Swagger and OpenAPI
@@ -96,7 +97,7 @@ Nest is [MIT licensed](LICENSE).
 List with all user but not with own
 Passwort should not be given to other people
 Match Entity
-Choices Entity
+Points Entity
 CLI
 Computer Player
 better folder structure

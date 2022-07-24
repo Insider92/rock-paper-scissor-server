@@ -24,6 +24,5 @@ import { ChoiceModule } from './module/choice/choice.module';
     ChoiceModule,
   ],
   controllers: [AppController],
-  providers: [],
 })
 export class AppModule {}

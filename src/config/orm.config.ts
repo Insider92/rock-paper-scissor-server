@@ -7,7 +7,7 @@ export const ormConfig: TypeOrmModuleOptions = {
   username: 'root',
   password: 'password',
   database: 'aerq',
-  synchronize: false,
+  synchronize: true,
   name: 'default',
   entities: [`${__dirname}/../**/*.entity{.ts,.js}`],
   migrations: ['dist/migrations/*{.ts,.js}'],
