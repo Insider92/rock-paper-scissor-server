@@ -20,6 +20,13 @@ export class UserEntity extends AbstractOrmEntity {
     nullable: false,
   })
   email: string;
+
+  @Column({
+    type: 'int',
+    default: 0,
+  })
+  points: number;
+
   @BeforeInsert() async hashPassword() {
     this.password = await bcrypt.hash(this.password, 10);
   }

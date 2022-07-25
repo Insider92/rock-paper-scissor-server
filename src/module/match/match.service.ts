@@ -141,10 +141,7 @@ export class MatchService {
     match: ChallengeChoiceDto,
     user: any,
   ): Promise<FinishedMatchDto> {
-
-    const humanChoiceEntity = await this.choiceService.getOne(
-      match.choice,
-    );
+    const humanChoiceEntity = await this.choiceService.getOne(match.choice);
 
     const matchObject = {
       challengerUser: user.id,
@@ -178,8 +175,7 @@ export class MatchService {
   }
 
   async challengeHuman(match: ChallengeHumanDto, user: any): Promise<MatchDto> {
-
-     const challengedUserEntity = await this.userService.getOne(
+    const challengedUserEntity = await this.userService.getOne(
       match.challengedUser,
     );
 
@@ -209,7 +205,7 @@ export class MatchService {
     });
 
     const challengedChoiceEntity = await this.choiceService.getOne(
-      match.choice
+      match.choice,
     );
 
     const matchObject = {
@@ -223,8 +219,8 @@ export class MatchService {
     };
 
     const matchResult = await this._getMatchResult(
-      matchObject.challengerChoice.id.toString(),
-      matchObject.challengedChoice.toString(),
+      matchObject.challengerChoice.id,
+      matchObject.challengedChoice.id,
     );
 
     matchObject['result'] = matchResult;
@@ -240,10 +236,14 @@ export class MatchService {
       challengerChoice: challengerChoiceEntity,
     };
 
-    // Points Service here
+    await this.userService.updatePoints(
+      matchObject.challengerUser.id.toString(),
+      matchObject.challengedUser,
+      matchResult,
+    );
 
-    const matchToBeCreated = await this.matchRepository.create(matchObject);
-    await this.matchRepository.save(matchToBeCreated);
+    const matchToBeUpdated = await this.matchRepository.create(matchObject);
+    await this.matchRepository.save(matchToBeUpdated);
 
     return finishedMatchObject;
   }

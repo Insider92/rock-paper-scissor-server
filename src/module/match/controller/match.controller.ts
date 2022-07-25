@@ -175,8 +175,7 @@ export class MatchController {
   }
 
   @ApiOperation({
-    description:
-      'Answers a challenge from another user',
+    description: 'Answers a challenge from another user',
   })
   @ApiResponse({
     status: 200,
@@ -205,9 +204,7 @@ export class MatchController {
     @Body() match: ChallengeChoiceDto,
     @Req() req: any,
   ): Promise<FinishedMatchDto> {
-    const choiceExists = await this.matchService.choiceExists(
-      match.choice,
-    );
+    const choiceExists = await this.matchService.choiceExists(match.choice);
     if (!choiceExists)
       throw new HttpException(
         `There is no valid choice with id ${match.choice}`,
