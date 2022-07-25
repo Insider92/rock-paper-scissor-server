@@ -13,7 +13,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
-    description: 'Delivers an array of users',
+    description: 'Delivers an array of all users',
   })
   @ApiResponse({
     status: 200,
@@ -31,7 +31,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
-    description: 'Delivers an array of users without your own - can be used to search for opponents',
+    description: 'Delivers an array of all users without your own - can be used to search for opponents',
   })
   @ApiResponse({
     status: 200,

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ChoiceDto } from './dto/choice.dto';
+import { ChoiceNameDto } from './dto/choiceName.dto';
 import { ChoiceEntity } from './entity/choice.entity';
 
 @Injectable()
@@ -15,7 +16,7 @@ export class ChoiceService {
     return await this.choiceRepository.find({ relations: ['getsBeatenBy'] });
   }
 
-  async getOne(id: string): Promise<ChoiceDto> {
+  async getOne(id: string): Promise<ChoiceNameDto> {
     return await this.choiceRepository.findOne({
       where: { id: id },
     });

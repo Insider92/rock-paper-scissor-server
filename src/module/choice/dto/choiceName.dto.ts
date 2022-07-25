@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsAlphanumeric, IsString } from 'class-validator';
-import { ChoiceEntity } from '../entity/choice.entity';
+import { AbstractOrmEntity } from 'src/model/abstract.entity';
 
-export class ChoiceDto {
+export class ChoiceNameDto extends AbstractOrmEntity {
   @ApiProperty({
     description: 'Has to be an alphanumeric string',
     example: 'rock',
@@ -11,6 +11,4 @@ export class ChoiceDto {
   @IsNotEmpty()
   @IsAlphanumeric()
   name: string;
-  @IsNotEmpty()
-  getsBeatenBy: ChoiceEntity[];
 }

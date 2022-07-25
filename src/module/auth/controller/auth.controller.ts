@@ -10,6 +10,7 @@ import { LoginUserDto } from 'src/module/user/dto/loginUser.dto';
 import { UserDto } from 'src/module/user/dto/user.dto';
 import { AuthService } from '../auth.service';
 import { LoginDto } from '../dto/login.dto';
+import { RegisterDto } from '../dto/register.dto';
 import { LoginStatus } from '../interface/login-status.interface';
 import { RegistrationStatus } from '../interface/regisration-status.interface';
 
@@ -20,6 +21,10 @@ export class AuthController {
 
   @ApiOperation({
     description: 'Tries to register a new user',
+  })
+  @ApiResponse({
+    status: 201,
+    type: RegisterDto,
   })
   @ApiResponse({
     status: 400,
@@ -44,7 +49,7 @@ export class AuthController {
     description: 'Tries to login with given user',
   })
   @ApiResponse({
-    status: 200,
+    status: 201,
     type: LoginDto,
   })
   @ApiResponse({

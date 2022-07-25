@@ -2,11 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository } from 'typeorm';
 import { ChoiceService } from '../choice/choice.service';
-import { ChoiceDto } from '../choice/dto/choice.dto';
+import { ChoiceNameDto } from '../choice/dto/choiceName.dto';
 import { UserDto } from '../user/dto/user.dto';
 import { UserService } from '../user/user.service';
-import { AnswerChallengeDto } from './dto/answerChallenge.dto';
-import { ChallengeComputerDto } from './dto/challengeComputer.dto';
+import { ChallengeChoiceDto } from './dto/challengeChoiceDto';
 import { ChallengeHumanDto } from './dto/challengeHuman.dto';
 import { FinishedMatchDto } from './dto/finishedMatch.dto';
 import { MatchDto } from './dto/match.dto';
@@ -130,7 +129,7 @@ export class MatchService {
     });
   }
 
-  async choiceExists(choiceId: string): Promise<ChoiceDto> {
+  async choiceExists(choiceId: string): Promise<ChoiceNameDto> {
     return await this.choiceService.getOne(choiceId);
   }
 
@@ -139,18 +138,23 @@ export class MatchService {
   }
 
   async challengeComputer(
-    match: ChallengeComputerDto,
+    match: ChallengeChoiceDto,
     user: any,
   ): Promise<FinishedMatchDto> {
+
+    const humanChoiceEntity = await this.choiceService.getOne(
+      match.choice,
+    );
+
     const matchObject = {
       challengerUser: user.id,
-      challengerChoice: match.choice,
+      challengerChoice: humanChoiceEntity,
       opponentType: OpponentType.COMPUTER,
     };
 
     const computersChoice = await this._getComputersChoice();
     const matchResult = await this._getMatchResult(
-      matchObject.challengerChoice.toString(),
+      match.choice,
       computersChoice,
     );
     matchObject['challengedChoice'] = computersChoice;
@@ -159,10 +163,6 @@ export class MatchService {
 
     const computerChoiceEntity = await this.choiceService.getOne(
       computersChoice,
-    );
-
-    const humanChoiceEntity = await this.choiceService.getOne(
-      matchObject.challengerChoice.id,
     );
 
     const finishedMatchObject: FinishedMatchDto = {
@@ -178,10 +178,19 @@ export class MatchService {
   }
 
   async challengeHuman(match: ChallengeHumanDto, user: any): Promise<MatchDto> {
+
+     const challengedUserEntity = await this.userService.getOne(
+      match.challengedUser,
+    );
+
+    const challengerChoiceEntity = await this.choiceService.getOne(
+      match.choice,
+    );
+
     const matchObject = {
       challengerUser: user.id,
-      challengerChoice: match.choice,
-      challengedUser: match?.challengedUser,
+      challengerChoice: challengerChoiceEntity,
+      challengedUser: challengedUserEntity,
       opponentType: OpponentType.HUMAN,
     };
 
@@ -191,7 +200,7 @@ export class MatchService {
 
   async answerChallenge(
     id: string,
-    match: AnswerChallengeDto,
+    match: ChallengeChoiceDto,
     user: any,
   ): Promise<FinishedMatchDto> {
     const ongoingMatch = await this.matchRepository.findOne({
@@ -199,12 +208,16 @@ export class MatchService {
       relations: ['challengerUser', 'challengerChoice'],
     });
 
+    const challengedChoiceEntity = await this.choiceService.getOne(
+      match.choice
+    );
+
     const matchObject = {
       id: id,
       challengerUser: ongoingMatch.challengerUser,
       challengedUser: user.id,
       challengerChoice: ongoingMatch.challengerChoice,
-      challengedChoice: match.choice,
+      challengedChoice: challengedChoiceEntity,
       opponentType: ongoingMatch.opponentType,
       status: ongoingMatch.status,
     };
@@ -219,10 +232,6 @@ export class MatchService {
 
     const challengerChoiceEntity = await this.choiceService.getOne(
       matchObject.challengerChoice.id,
-    );
-
-    const challengedChoiceEntity = await this.choiceService.getOne(
-      matchObject.challengedChoice.toString(),
     );
 
     const finishedMatchObject: FinishedMatchDto = {

@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/module/auth/jwt-auth.guard';
-import { AnswerChallengeDto } from '../dto/answerChallenge.dto';
-import { ChallengeComputerDto } from '../dto/challengeComputer.dto';
+import { ChallengeChoiceDto } from '../dto/challengeChoiceDto';
 import { ChallengeHumanDto } from '../dto/challengeHuman.dto';
+import { ChallengeMatchDto } from '../dto/challengeMatchDto';
 import { FinishedMatchDto } from '../dto/finishedMatch.dto';
 import { MatchDto } from '../dto/match.dto';
 import { Status } from '../enum/status.enum';
@@ -79,6 +79,10 @@ export class MatchController {
     description: 'Challenges a computer to a match',
   })
   @ApiResponse({
+    status: 201,
+    type: FinishedMatchDto,
+  })
+  @ApiResponse({
     status: 404,
     description: 'There is no valid choice for the given choice',
   })
@@ -89,7 +93,7 @@ export class MatchController {
   @UseGuards(JwtAuthGuard)
   @Post('/computer')
   async challengeComputer(
-    @Body() match: ChallengeComputerDto,
+    @Body() match: ChallengeChoiceDto,
     @Req() req: any,
   ): Promise<FinishedMatchDto> {
     const choiceExists = await this.matchService.choiceExists(
@@ -106,6 +110,10 @@ export class MatchController {
 
   @ApiOperation({
     description: 'Challenges a human user to a match',
+  })
+  @ApiResponse({
+    status: 201,
+    type: ChallengeMatchDto,
   })
   @ApiResponse({
     status: 404,
@@ -168,7 +176,11 @@ export class MatchController {
 
   @ApiOperation({
     description:
-      'Creates a match vs human user or computer if no challenged user is given',
+      'Answers a challenge from another user',
+  })
+  @ApiResponse({
+    status: 200,
+    type: FinishedMatchDto,
   })
   @ApiResponse({
     status: 404,
@@ -190,11 +202,11 @@ export class MatchController {
   @Put(':id')
   async AnswerChallenge(
     @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() match: AnswerChallengeDto,
+    @Body() match: ChallengeChoiceDto,
     @Req() req: any,
   ): Promise<FinishedMatchDto> {
     const choiceExists = await this.matchService.choiceExists(
-      match.choice.toString(),
+      match.choice,
     );
     if (!choiceExists)
       throw new HttpException(

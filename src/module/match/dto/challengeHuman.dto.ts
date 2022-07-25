@@ -6,8 +6,8 @@ import { UserEntity } from 'src/module/user/entity/user.entity';
 export class ChallengeHumanDto {
   @ApiProperty()
   @IsNotEmpty()
-  challengedUser: UserEntity;
+  challengedUser: string;
   @ApiProperty()
   @IsNotEmpty()
-  choice: ChoiceEntity;
+  choice: string;
 }

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { ChoiceDto } from 'src/module/choice/dto/choice.dto';
+import { ChoiceNameDto } from 'src/module/choice/dto/choiceName.dto';
 import { Result } from '../enum/result.enum';
 
 export class FinishedMatchDto {
@@ -9,7 +9,7 @@ export class FinishedMatchDto {
   result: Result;
   @ApiProperty()
   @IsNotEmpty()
-  challengerChoice: ChoiceDto;
+  challengerChoice: ChoiceNameDto;
   @ApiProperty()
-  challengedChoice: ChoiceDto;
+  challengedChoice: ChoiceNameDto;
 }
