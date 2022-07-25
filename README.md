@@ -95,12 +95,8 @@ Nest is [MIT licensed](LICENSE).
 ## TO-DO
 
 List with all user but not with own
-Passwort should not be given to other people
-Match Entity
 Points Entity
 CLI
-Computer Player
-better folder structure
 
 
 docker run --name demo-mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=aerq -d mysql:latest

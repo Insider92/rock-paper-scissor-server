@@ -8,7 +8,6 @@ import { ChoiceDto } from '../dto/choice.dto';
 export class ChoiceController {
   constructor(private choiceService: ChoiceService) {}
 
-  @Get()
   @ApiOperation({
     description: 'Delivers an array of choices',
   })
@@ -17,6 +16,7 @@ export class ChoiceController {
     type: ChoiceDto,
     isArray: true,
   })
+  @Get()
   async GetAll(): Promise<ChoiceDto[]> {
     return await this.choiceService.getAll();
   }

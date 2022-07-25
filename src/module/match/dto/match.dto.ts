@@ -33,7 +33,7 @@ export class MatchDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  challenger: UserEntity;
+  challengerUser: UserEntity;
 
   @ApiProperty()
   challengedUser: UserEntity;

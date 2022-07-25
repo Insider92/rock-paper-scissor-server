@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { UserEntity } from 'src/module/user/entity/user.entity';
+import { ChoiceEntity } from 'src/module/choice/entity/choice.entity';
 
-export class AnswerMatchDto {
+export class AnswerChallengeDto {
   @ApiProperty()
   @IsNotEmpty()
-  choice: UserEntity;
+  choice: ChoiceEntity;
 }

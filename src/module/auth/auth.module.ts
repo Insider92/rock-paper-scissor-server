@@ -4,7 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { UserModule } from 'src/module/user/user.module';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
-import { AuthController } from './auth.controller';
+import { AuthController } from './controller/auth.controller';
 import * as config from 'config';
 
 const authConfig = config.get('auth');

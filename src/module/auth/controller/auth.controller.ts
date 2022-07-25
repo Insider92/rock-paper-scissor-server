@@ -8,10 +8,10 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginUserDto } from 'src/module/user/dto/loginUser.dto';
 import { UserDto } from 'src/module/user/dto/user.dto';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { LoginStatus } from './interface/login-status.interface';
-import { RegistrationStatus } from './interface/regisration-status.interface';
+import { AuthService } from '../auth.service';
+import { LoginDto } from '../dto/login.dto';
+import { LoginStatus } from '../interface/login-status.interface';
+import { RegistrationStatus } from '../interface/regisration-status.interface';
 
 @Controller('v1/auth')
 @ApiTags('auth')

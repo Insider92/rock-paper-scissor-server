@@ -14,4 +14,26 @@ export class ChoiceService {
   async getAll(): Promise<ChoiceDto[]> {
     return await this.choiceRepository.find({ relations: ['getsBeatenBy'] });
   }
+
+  async getOne(id: string): Promise<ChoiceDto> {
+    return await this.choiceRepository.findOne({
+      where: { id: id },
+    });
+  }
+
+  async getOneWithRelations(id: string): Promise<ChoiceDto> {
+    return await this.choiceRepository.findOne({
+      where: { id: id },
+      relations: ['getsBeatenBy'],
+    });
+  }
+
+  async getRandomChoice(): Promise<ChoiceDto> {
+    return await this.choiceRepository
+      .createQueryBuilder('choice')
+      .select('id')
+      .orderBy('RAND()') // Works only in mysql
+      .limit(1)
+      .execute();
+  }
 }

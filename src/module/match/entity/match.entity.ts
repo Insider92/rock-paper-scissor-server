@@ -30,7 +30,7 @@ export class MatchEntity extends AbstractOrmEntity {
   result: Result;
 
   @ManyToOne(() => UserEntity, (challengerUser) => challengerUser.id)
-  challenger: UserEntity;
+  challengerUser: UserEntity;
 
   @ManyToOne(() => UserEntity, (challengedUser) => challengedUser.id)
   challengedUser: UserEntity;

@@ -1,70 +1,247 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ChoiceEntity } from '../choice/entity/choice.entity';
-import { CreateMatchDto } from './dto/createMatch.dto';
+import { Brackets, Repository } from 'typeorm';
+import { ChoiceService } from '../choice/choice.service';
+import { ChoiceDto } from '../choice/dto/choice.dto';
+import { UserDto } from '../user/dto/user.dto';
+import { UserService } from '../user/user.service';
+import { AnswerChallengeDto } from './dto/answerChallenge.dto';
+import { ChallengeComputerDto } from './dto/challengeComputer.dto';
+import { ChallengeHumanDto } from './dto/challengeHuman.dto';
+import { FinishedMatchDto } from './dto/finishedMatch.dto';
 import { MatchDto } from './dto/match.dto';
 import { MatchEntity } from './entity/match.entity';
 import { OpponentType } from './enum/opponentType.enum';
 import { Result } from './enum/result.enum';
+import { Status } from './enum/status.enum';
 
 @Injectable()
 export class MatchService {
   constructor(
     @InjectRepository(MatchEntity)
     private readonly matchRepository: Repository<MatchEntity>,
-    @InjectRepository(ChoiceEntity)
-    private choiceRepository: Repository<ChoiceEntity>,
+    private readonly choiceService: ChoiceService,
+    private readonly userService: UserService,
   ) {}
 
-  async getAll(): Promise<MatchDto[]> {
+
+  async getOneWithRelations(id: string): Promise<MatchDto> {
+    return await this.matchRepository.findOne({
+      where: { id: id },
+      relations: ['challengerUser', 'challengerChoice', 'challengedUser', 'challengedChoice']
+    });
+  }
+
+  async GetAllMatches(): Promise<MatchDto[]> {
     return await this.matchRepository.find({
       relations: [
-        'challenger',
+        'challengerUser',
         'challengedUser',
         'challengerChoice',
         'challengedChoice',
       ],
+      select: {
+        id: true,
+        result: true,
+        status: true,
+        opponentType: true,
+        challengerChoice: {
+          id: true,
+          name: true,
+        },
+        challengedChoice: {
+          id: true,
+          name: true,
+        },
+        challengerUser: {
+          id: true,
+          username: true,
+        },
+        challengedUser: {
+          id: true,
+          username: true,
+        },
+      },
     });
   }
 
-  async choiceExists(match: CreateMatchDto): Promise<ChoiceEntity> {
-    return await this.choiceRepository.findOne({
-      where: { id: match.choice.toString() },
+  async GetUsersFinishedMachtes(user: any): Promise<MatchDto[]> {
+    return await this.matchRepository
+      .createQueryBuilder('match')
+      .innerJoin('match.challengerUser', 'challengerUser')
+      .leftJoin('match.challengedUser', 'challengedUser')
+      .innerJoin('match.challengerChoice', 'challengerChoice')
+      .innerJoin('match.challengedChoice', 'challengedChoice')
+      .where('match.status = :status', { status: Status.FINISHED })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('match.challengerUser.id = :id', {
+            id: user.id,
+          })
+          .orWhere('match.challengedUser.id = :id', { id: user.id });
+        }),
+      )
+      .select([
+        'match.id',
+        'match.updatedAt',
+        'match.status',
+        'match.result',
+        'match.opponentType',
+      ])
+      .addSelect([
+        'challengerUser.id',
+        'challengerUser.username',
+        'challengedUser.id',
+        'challengedUser.username',
+        'challengerChoice.id',
+        'challengerChoice.name',
+        'challengedChoice.id',
+        'challengedChoice.name',
+      ])
+      .getMany();
+  }
+
+  async GetUsersChallenges(user: any): Promise<MatchDto[]> {
+    return await this.matchRepository.find({
+      where: {
+        status: Status.ONGOING,
+        challengedUser: {
+          id: user.id,
+        },
+      },
+      relations: ['challengerUser', 'challengedUser'],
+      select: {
+        id: true,
+        result: true,
+        status: true,
+        opponentType: true,
+        challengerUser: {
+          id: true,
+          username: true,
+        },
+        challengedUser: {
+          id: true,
+          username: true,
+        },
+      },
     });
   }
 
-  async createMatch(match: CreateMatchDto): Promise<MatchDto> {
+  async choiceExists(choiceId: string): Promise<ChoiceDto> {
+    return await this.choiceService.getOne(choiceId);
+  }
+
+  async userExists(userId: string): Promise<UserDto> {
+    return await this.userService.getOne(userId);
+  }
+
+  async challengeComputer(
+    match: ChallengeComputerDto,
+    user: any,
+  ): Promise<FinishedMatchDto> {
     const matchObject = {
-      challengerUser: null, // TO-DO with Auth req.user
+      challengerUser: user.id,
       challengerChoice: match.choice,
-      challengedUser: match?.challengedUser,
-      opponentType: !match.challengedUser
-        ? OpponentType.COMPUTER
-        : OpponentType.HUMAN,
+      opponentType: OpponentType.COMPUTER,
     };
 
-    if (matchObject.opponentType === OpponentType.COMPUTER) {
-      const computersChoice = await this._getComputersChoice();
-      const matchResult = await this._getMatchResult(
-        matchObject.challengerChoice.toString(),
-        computersChoice,
-      );
-      matchObject['challengedChoice'] = computersChoice;
-      matchObject['result'] = matchResult;
-    }
+    const computersChoice = await this._getComputersChoice();
+    const matchResult = await this._getMatchResult(
+      matchObject.challengerChoice.toString(),
+      computersChoice,
+    );
+    matchObject['challengedChoice'] = computersChoice;
+    matchObject['result'] = matchResult;
+    matchObject['status'] = Status.FINISHED;
 
-    const matchToBeCreated = this.matchRepository.create(matchObject);
+    const computerChoiceEntity = await this.choiceService.getOne(
+      computersChoice,
+    );
+
+    const humanChoiceEntity = await this.choiceService.getOne(
+      matchObject.challengerChoice.id,
+    );
+
+    const finishedMatchObject: FinishedMatchDto = {
+      result: matchResult,
+      challengedChoice: computerChoiceEntity,
+      challengerChoice: humanChoiceEntity,
+    };
+
+    const matchToBeCreated = await this.matchRepository.create(matchObject);
+    await this.matchRepository.save(matchToBeCreated);
+
+    return finishedMatchObject;
+  }
+
+  async challengeHuman(match: ChallengeHumanDto, user: any): Promise<MatchDto> {
+    const matchObject = {
+      challengerUser: user.id,
+      challengerChoice: match.choice,
+      challengedUser: match?.challengedUser,
+      opponentType: OpponentType.HUMAN,
+    };
+
+    const matchToBeCreated = await this.matchRepository.create(matchObject);
     return await this.matchRepository.save(matchToBeCreated);
   }
 
+  async answerChallenge(
+    id: string,
+    match: AnswerChallengeDto,
+    user: any,
+  ): Promise<FinishedMatchDto> {
+    const ongoingMatch = await this.matchRepository.findOne({
+      where: { id: id },
+      relations: ['challengerUser', 'challengerChoice'],
+    });
+
+    const matchObject = {
+      id: id,
+      challengerUser: ongoingMatch.challengerUser,
+      challengedUser: user.id,
+      challengerChoice: ongoingMatch.challengerChoice,
+      challengedChoice: match.choice,
+      opponentType: ongoingMatch.opponentType,
+      status: ongoingMatch.status,
+    };
+
+    const matchResult = await this._getMatchResult(
+      matchObject.challengerChoice.id.toString(),
+      matchObject.challengedChoice.toString(),
+    );
+
+    matchObject['result'] = matchResult;
+    matchObject['status'] = Status.FINISHED;
+
+    const challengerChoiceEntity = await this.choiceService.getOne(
+      matchObject.challengerChoice.id,
+    );
+
+    const challengedChoiceEntity = await this.choiceService.getOne(
+      matchObject.challengedChoice.toString(),
+    );
+
+    const finishedMatchObject: FinishedMatchDto = {
+      result: matchResult,
+      challengedChoice: challengedChoiceEntity,
+      challengerChoice: challengerChoiceEntity,
+    };
+
+    // Points Service here
+
+    const matchToBeCreated = await this.matchRepository.create(matchObject);
+    await this.matchRepository.save(matchToBeCreated);
+
+    return finishedMatchObject
+  }
+
+  //-------------------------------------------------------------------------------------------------
+  // Private Functions
+  //-------------------------------------------------------------------------------------------------
+
   async _getComputersChoice(): Promise<string> {
-    const randomChoiceId = await this.choiceRepository
-      .createQueryBuilder('choice')
-      .select('id')
-      .orderBy('RAND()') // Works only in mysql
-      .limit(1)
-      .execute();
+    const randomChoiceId = await this.choiceService.getRandomChoice();
     return randomChoiceId[0].id;
   }
 
@@ -74,10 +251,9 @@ export class MatchService {
   ): Promise<Result> {
     if (challengerChoice === challengedChoice) return Result.DRAW;
 
-    const choice = await this.choiceRepository.findOne({
-      where: { id: challengerChoice },
-      relations: ['getsBeatenBy'],
-    });
+    const choice = await this.choiceService.getOneWithRelations(
+      challengerChoice,
+    );
     const getsBeatenBy = choice.getsBeatenBy.find(
       (choice) => choice.id === challengedChoice,
     );
