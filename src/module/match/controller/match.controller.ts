@@ -201,19 +201,16 @@ export class MatchController {
         `There is no valid choice with id ${match.choice}`,
         404,
       );
-      const exsitingMatch = await this.matchService.getOneWithRelations(id)
+    const exsitingMatch = await this.matchService.getOneWithRelations(id);
 
-      if (exsitingMatch.status === Status.FINISHED)
+    if (exsitingMatch.status === Status.FINISHED)
       throw new HttpException(
         `The match with id ${id} is already finished - you can't update your choice anymore`,
         404,
       );
 
-      if (exsitingMatch.challengedUser.id !== req.user.id)
-      throw new HttpException(
-        `You are not authorized to play this match`,
-        401,
-      );
+    if (exsitingMatch.challengedUser.id !== req.user.id)
+      throw new HttpException(`You are not authorized to play this match`, 401);
 
     return await this.matchService.answerChallenge(id, match, req.user);
   }

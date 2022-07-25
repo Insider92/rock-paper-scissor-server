@@ -24,11 +24,15 @@ export class MatchService {
     private readonly userService: UserService,
   ) {}
 
-
   async getOneWithRelations(id: string): Promise<MatchDto> {
     return await this.matchRepository.findOne({
       where: { id: id },
-      relations: ['challengerUser', 'challengerChoice', 'challengedUser', 'challengedChoice']
+      relations: [
+        'challengerUser',
+        'challengerChoice',
+        'challengedUser',
+        'challengedChoice',
+      ],
     });
   }
 
@@ -77,8 +81,7 @@ export class MatchService {
         new Brackets((qb) => {
           qb.where('match.challengerUser.id = :id', {
             id: user.id,
-          })
-          .orWhere('match.challengedUser.id = :id', { id: user.id });
+          }).orWhere('match.challengedUser.id = :id', { id: user.id });
         }),
       )
       .select([
@@ -233,7 +236,7 @@ export class MatchService {
     const matchToBeCreated = await this.matchRepository.create(matchObject);
     await this.matchRepository.save(matchToBeCreated);
 
-    return finishedMatchObject
+    return finishedMatchObject;
   }
 
   //-------------------------------------------------------------------------------------------------
