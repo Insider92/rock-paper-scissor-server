@@ -7,11 +7,9 @@ export class FinishedMatchDto {
   @ApiProperty()
   @IsNotEmpty()
   result: Result;
-
   @ApiProperty()
   @IsNotEmpty()
   challengerChoice: ChoiceDto;
-
   @ApiProperty()
   challengedChoice: ChoiceDto;
 }

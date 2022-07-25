@@ -1,6 +1,8 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { OwnUserDto } from './dto/ownUser.dto';
+import { PublicUserDto } from './dto/publicUser.dto';
 import { UserDto } from './dto/user.dto';
 import { UserService } from './user.service';
 
@@ -9,7 +11,6 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
     description: 'Delivers an array of users',
@@ -23,15 +24,43 @@ export class UserController {
     status: 401,
     description: 'Unauthorized',
   })
-  async GetAll(@Req() req: any): Promise<UserDto[]> {
-    console.log(req.user);
+  @Get()
+  async GetAll(): Promise<PublicUserDto[]> {
     return await this.userService.getAll();
   }
-}
 
-/**
- *
- * TO-DO: List with all user but not with own
- * Passwort should not be given to other people
- *
- */
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    description: 'Delivers an array of users without your own - can be used to search for opponents',
+  })
+  @ApiResponse({
+    status: 200,
+    type: PublicUserDto,
+    isArray: true,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @Get('/others')
+  async GetAllWithoutOwn(@Req() req: any): Promise<PublicUserDto[]> {
+    return await this.userService.getAllWithoutOwn(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    description: 'Delivers your own user',
+  })
+  @ApiResponse({
+    status: 200,
+    type: OwnUserDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @Get('/whoami')
+  async GetOwn(@Req() req: any): Promise<OwnUserDto> {
+    return await this.userService.getOwn(req.user);
+  }
+}

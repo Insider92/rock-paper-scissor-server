@@ -1,8 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { comparePasswords } from 'src/helper/utils';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Not, Repository, UpdateResult } from 'typeorm';
 import { LoginUserDto } from './dto/loginUser.dto';
+import { OwnUserDto } from './dto/ownUser.dto';
+import { PublicUserDto } from './dto/publicUser.dto';
 import { UserDto } from './dto/user.dto';
 import { UserEntity } from './entity/user.entity';
 
@@ -13,14 +15,42 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  // Passworter auslesen ?!
-  async getAll(): Promise<UserDto[]> {
-    return await this.userRepository.find();
+  async getAll(): Promise<PublicUserDto[]> {
+    return await this.userRepository.find({
+      select: {
+        id: true,
+        username: true,
+      },
+    });
   }
 
-  // Passworter auslesen ?!
+  async getAllWithoutOwn(user: any): Promise<PublicUserDto[]> {
+    return await this.userRepository.find({
+      where: {id : Not(user.id) },
+      select: {
+        id: true,
+        username: true,
+      },
+    });
+  }
+
+  async getOwn(user: any): Promise<OwnUserDto> {
+    return await this.userRepository.findOne({
+      where: { id : user.id },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        createdAt: true
+      },
+    });
+  }
+
   async getOne(id: string): Promise<UserDto> {
-    return await this.userRepository.findOne({ where: { id: id } });
+    return await this.userRepository.findOne({
+      where: { id: id },
+      select: { id: true, username: true },
+    });
   }
 
   async create(user: UserDto): Promise<UserDto> {

@@ -11,7 +11,6 @@ export class ChoiceDto {
   @IsNotEmpty()
   @IsAlphanumeric()
   name: string;
-
   @IsNotEmpty()
   getsBeatenBy: ChoiceEntity[];
 }

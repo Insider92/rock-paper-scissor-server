@@ -7,7 +7,6 @@ export class ChallengeHumanDto {
   @ApiProperty()
   @IsNotEmpty()
   challengedUser: UserEntity;
-
   @ApiProperty()
   @IsNotEmpty()
   choice: ChoiceEntity;

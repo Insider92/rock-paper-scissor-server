@@ -14,7 +14,6 @@ export class MatchDto {
   })
   @IsEnum(Status)
   status: Status;
-
   @ApiProperty({
     description: 'Shows type of opponent',
     enum: OpponentType,
@@ -22,7 +21,6 @@ export class MatchDto {
   })
   @IsEnum(OpponentType)
   opponentType: OpponentType;
-
   @ApiProperty({
     description: 'Shows type of opponent',
     enum: Result,
@@ -30,18 +28,14 @@ export class MatchDto {
   })
   @IsEnum(Result)
   result: Result;
-
   @ApiProperty()
   @IsNotEmpty()
   challengerUser: UserEntity;
-
   @ApiProperty()
   challengedUser: UserEntity;
-
   @ApiProperty()
   @IsNotEmpty()
   challengerChoice: ChoiceEntity;
-
   @ApiProperty()
   challengedChoice: ChoiceEntity;
 }
