@@ -6,6 +6,9 @@ import { Result } from '../enum/result.enum';
 export class FinishedMatchDto {
   @ApiProperty()
   @IsNotEmpty()
+  id: string;
+  @ApiProperty()
+  @IsNotEmpty()
   result: Result;
   @ApiProperty()
   @IsNotEmpty()

@@ -162,14 +162,15 @@ export class MatchService {
       computersChoice,
     );
 
+    const matchToBeCreated = await this.matchRepository.create(matchObject);
+    const savedMatch = await this.matchRepository.save(matchToBeCreated);
+
     const finishedMatchObject: FinishedMatchDto = {
+      id: savedMatch.id,
       result: matchResult,
       challengedChoice: computerChoiceEntity,
       challengerChoice: humanChoiceEntity,
     };
-
-    const matchToBeCreated = await this.matchRepository.create(matchObject);
-    await this.matchRepository.save(matchToBeCreated);
 
     return finishedMatchObject;
   }
@@ -230,12 +231,6 @@ export class MatchService {
       matchObject.challengerChoice.id,
     );
 
-    const finishedMatchObject: FinishedMatchDto = {
-      result: matchResult,
-      challengedChoice: challengedChoiceEntity,
-      challengerChoice: challengerChoiceEntity,
-    };
-
     await this.userService.updatePoints(
       matchObject.challengerUser.id.toString(),
       matchObject.challengedUser,
@@ -245,6 +240,13 @@ export class MatchService {
     const matchToBeUpdated = await this.matchRepository.create(matchObject);
     await this.matchRepository.save(matchToBeUpdated);
 
+    const finishedMatchObject: FinishedMatchDto = {
+      id: id,
+      result: matchResult,
+      challengedChoice: challengedChoiceEntity,
+      challengerChoice: challengerChoiceEntity,
+    };
+
     return finishedMatchObject;
   }
 
@@ -253,10 +255,10 @@ export class MatchService {
   //-------------------------------------------------------------------------------------------------
 
   async _getComputersChoice(): Promise<string> {
-    const randomChoiceId = await this.choiceService.getRandomChoice();
-    return randomChoiceId[0].id;
+    return await this.choiceService.getRandomChoice();
   }
 
+  // UNIT TEST
   async _getMatchResult(
     challengerChoice: string,
     challengedChoice: string,

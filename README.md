@@ -95,9 +95,7 @@ Nest is [MIT licensed](LICENSE).
 
 ## TO-DO
 
-Docker
-Tests (Unit Test match und matches) E2E für alles andere
-CLI
-
+Docker for create db aerq and test_aerq
+Unit Test
 
 docker run --name demo-mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=aerq -d mysql:latest

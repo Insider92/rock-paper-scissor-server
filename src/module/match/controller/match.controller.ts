@@ -27,7 +27,7 @@ export class MatchController {
   constructor(private matchService: MatchService) {}
 
   @ApiOperation({
-    description: 'Delivers an array of finished matches',
+    description: 'Delivers an array of all matches',
   })
   @ApiResponse({
     status: 200,

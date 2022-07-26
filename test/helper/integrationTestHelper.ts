@@ -1,13 +1,11 @@
 import { EntityManager } from 'typeorm';
 
-// only works in sqlite
 export async function truncate(entityManager: EntityManager) {
-  await entityManager.query('PRAGMA foreign_keys = OFF');
-
+  await entityManager.query('SET FOREIGN_KEY_CHECKS = 0;');
   const entities = entityManager.connection.entityMetadatas;
   for (const entity of entities) {
-    await entityManager.query(`DELETE FROM ${entity.tableName};`);
+    await entityManager.query(`
+    TRUNCATE TABLE \`${entity.tableName}\`;`);
   }
-
-  await entityManager.query('PRAGMA foreign_keys = ON');
+  await entityManager.query('SET FOREIGN_KEY_CHECKS = 1;');
 }

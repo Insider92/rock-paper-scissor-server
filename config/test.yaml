@@ -1,0 +1,7 @@
+server:
+  serverPort: 3001
+  serverPrefix: aerq
+  nodeEnv: DEV
+auth:
+  jwtSecret: HelloWorld123
+  jwtExpiresIn: 3600s

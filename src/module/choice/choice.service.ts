@@ -29,12 +29,13 @@ export class ChoiceService {
     });
   }
 
-  async getRandomChoice(): Promise<ChoiceDto> {
-    return await this.choiceRepository
+  async getRandomChoice(): Promise<string> {
+    const choice = await this.choiceRepository
       .createQueryBuilder('choice')
       .select('id')
       .orderBy('RAND()') // Works only in mysql
       .limit(1)
       .execute();
+    return choice[0].id;
   }
 }
