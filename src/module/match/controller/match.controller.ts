@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpException,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -102,7 +103,7 @@ export class MatchController {
     if (!choiceExists)
       throw new HttpException(
         `There is no valid choice with id ${match.choice}`,
-        404,
+        HttpStatus.NOT_FOUND,
       );
 
     return await this.matchService.challengeComputer(match, req.user);
@@ -144,7 +145,7 @@ export class MatchController {
     if (match.challengedUser.toString() === '') {
       throw new HttpException(
         `There should be a valid user id not an empty user id string`,
-        404,
+        HttpStatus.NOT_FOUND,
       );
     }
 
@@ -158,7 +159,7 @@ export class MatchController {
     if (!choiceExists)
       throw new HttpException(
         `There is no valid choice with id ${match.choice}`,
-        404,
+        HttpStatus.NOT_FOUND,
       );
 
     if (match.challengedUser) {
@@ -168,7 +169,7 @@ export class MatchController {
       if (!userExists)
         throw new HttpException(
           `There is no valid user with id ${match.challengedUser}`,
-          404,
+          HttpStatus.NOT_FOUND,
         );
     }
     return await this.matchService.challengeHuman(match, req.user);
@@ -199,7 +200,7 @@ export class MatchController {
   })
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  async AnswerChallenge(
+  async answerChallenge(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() match: ChallengeChoiceDto,
     @Req() req: any,
@@ -208,18 +209,21 @@ export class MatchController {
     if (!choiceExists)
       throw new HttpException(
         `There is no valid choice with id ${match.choice}`,
-        404,
+        HttpStatus.NOT_FOUND,
       );
     const exsitingMatch = await this.matchService.getOneWithRelations(id);
 
     if (exsitingMatch.status === Status.FINISHED)
       throw new HttpException(
         `The match with id ${id} is already finished - you can't update your choice anymore`,
-        404,
+        HttpStatus.NOT_FOUND,
       );
 
     if (exsitingMatch.challengedUser.id !== req.user.id)
-      throw new HttpException(`You are not authorized to play this match`, 401);
+      throw new HttpException(
+        `You are not authorized to play this match`,
+        HttpStatus.UNAUTHORIZED,
+      );
 
     return await this.matchService.answerChallenge(id, match, req.user);
   }

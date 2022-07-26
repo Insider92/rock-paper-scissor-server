@@ -48,11 +48,12 @@ The database ceases to exist as soon as the database connection is closed
 ## Assumptions 
 
 * A user can only have mulitple game with an other spefic user at the same time (Challenge some is POST / Challenge Answer is PUT with Match ID)
-* Only the core game service is protected by auth (match POST, match own, Match PUT) and user login
 * There is no route to create a choice (default choices will be set with migration & could implemented in the future with POST request)
 * There is no route to update a choice (could implemented in the future with PUT request)
 * There is no route to delete a choice (could implemented in the future with DELETE request)
 
+# CLI 
+* Didn't find a satifing solution for authorization with cli options (other then with curl command or new services functions)
 
 ## Swagger and OpenAPI
 
@@ -94,8 +95,8 @@ Nest is [MIT licensed](LICENSE).
 
 ## TO-DO
 
-List with all user but not with own
-Points Entity
+Docker
+Tests (Unit Test match und matches) E2E für alles andere
 CLI
 
 

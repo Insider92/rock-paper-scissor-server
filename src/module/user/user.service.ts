@@ -22,7 +22,7 @@ export class UserService {
       select: {
         id: true,
         username: true,
-        points: true
+        points: true,
       },
     });
   }
@@ -33,7 +33,7 @@ export class UserService {
       select: {
         id: true,
         username: true,
-        points: true
+        points: true,
       },
     });
   }
@@ -46,7 +46,7 @@ export class UserService {
         username: true,
         email: true,
         createdAt: true,
-        points: true
+        points: true,
       },
     });
   }
@@ -66,7 +66,7 @@ export class UserService {
     if (userAlreadyExists) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
-  
+
     // need to create user first and save it, so that @BeforeInsert() decorator triggers
     const userToBeCreated = await this.userRepository.create(user);
     return await this.userRepository.save(userToBeCreated);
@@ -122,11 +122,20 @@ export class UserService {
     }
   }
 
+  //-------------------------------------------------------------------------------------------------
+  // Private Functions
+  //-------------------------------------------------------------------------------------------------
+
+  // UNIT TEST
   async _update(points: Points, userId: string): Promise<UserEntity> {
+    const userEntity = await this.userRepository.findOne({
+      where: { id: userId },
+    });
 
-    const userEntity = await this.userRepository.findOne({where: {id: userId}})
-
-    const updatedPoints = points === Points.LOSE_POINTS ? userEntity.points - points : userEntity.points + points;
+    const updatedPoints =
+      points === Points.LOSE_POINTS
+        ? userEntity.points - points
+        : userEntity.points + points;
     const toBeUpdatedPoints = updatedPoints < 0 ? 0 : updatedPoints;
 
     const pointsToBeUpdated = await this.userRepository.create({

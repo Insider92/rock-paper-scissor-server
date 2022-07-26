@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsAlphanumeric, IsString, IsNumber } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsAlphanumeric,
+  IsString,
+  IsNumber,
+} from 'class-validator';
 
 export class PublicUserDto {
   @ApiProperty()
@@ -12,5 +17,5 @@ export class PublicUserDto {
   username: string;
   @ApiProperty()
   @IsNumber()
-  points: number
+  points: number;
 }

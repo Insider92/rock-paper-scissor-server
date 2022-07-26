@@ -4,15 +4,12 @@ import { ChoiceModule } from '../choice/choice.module';
 import { UserModule } from '../user/user.module';
 import { MatchController } from './controller/match.controller';
 import { MatchEntity } from './entity/match.entity';
+import { MatchCommand } from './match.command';
 import { MatchService } from './match.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([MatchEntity]),
-    ChoiceModule,
-    UserModule,
-  ],
+  imports: [TypeOrmModule.forFeature([MatchEntity]), ChoiceModule, UserModule],
   controllers: [MatchController],
-  providers: [MatchService],
+  providers: [MatchService, MatchCommand],
 })
 export class MatchModule {}

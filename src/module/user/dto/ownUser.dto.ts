@@ -16,5 +16,5 @@ export class OwnUserDto {
   email: string;
   @ApiProperty()
   @IsNumber()
-  points: number
+  points: number;
 }
