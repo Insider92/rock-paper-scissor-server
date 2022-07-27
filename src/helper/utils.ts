@@ -1,5 +1,5 @@
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
 
 export const comparePasswords = async (userPassword, currentPassword) => {
-  return await bcrypt.compare(currentPassword, userPassword);
+  return await bcryptjs.compare(currentPassword, userPassword);
 };

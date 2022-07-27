@@ -1,0 +1,34 @@
+version: '3.6'
+    
+services: 
+    mysql:
+        container_name: mysql
+        image: mysql:latest
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: aerq
+        ports:
+            - 3307:3306
+        expose:
+            - 3307
+        volumes: 
+            - ./init:/docker-entrypoint-initdb.d
+        networks:
+            - common-net
+    backend:
+        container_name: nestjs
+        restart: always
+        build: .
+        volumes:
+            - .:/usr/src/app
+        working_dir: /usr/src/app
+        ports:
+            - 3001:3001
+        depends_on:
+            - mysql
+        networks:
+            - common-net
+networks:
+  common-net: {}

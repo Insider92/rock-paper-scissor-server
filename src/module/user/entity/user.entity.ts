@@ -1,6 +1,6 @@
 import { AbstractOrmEntity } from 'src/model/abstract.entity';
 import { BeforeInsert, Column, Entity } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
 
 @Entity('user')
 export class UserEntity extends AbstractOrmEntity {
@@ -28,6 +28,6 @@ export class UserEntity extends AbstractOrmEntity {
   points: number;
 
   @BeforeInsert() async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
+    this.password = await bcryptjs.hash(this.password, 10);
   }
 }

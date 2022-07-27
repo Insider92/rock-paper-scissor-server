@@ -53,7 +53,7 @@ The database ceases to exist as soon as the database connection is closed
 * There is no route to delete a choice (could implemented in the future with DELETE request)
 
 # CLI 
-* Didn't find a satifing solution for authorization with cli options (other then with curl command or new services functions)
+* Didn't find a satifing solution for authorization with cli options (other then with curl command on started service) => CLI is not protected by auth
 
 ## Swagger and OpenAPI
 
@@ -63,11 +63,14 @@ You can see the json for OpenAPI at ```/aerq/api-json```
 ## Running the app
 
 ```bash
-# development
-$ npm run start
+npm i
 
-# watch mode
-$ npm run start:dev
+# start db and app
+$ docker-compose up
+
+# start db
+$ docker-compose up  mysql
+$ npm start
 
 ```
 
@@ -78,10 +81,10 @@ $ npm run start:dev
 $ npm run test
 
 # e2e tests
+# start db
+$ docker-compose up mysql
 $ npm run test:e2e
 
-# test coverage
-$ npm run test:cov
 ```
 
 ## Support
@@ -95,7 +98,4 @@ Nest is [MIT licensed](LICENSE).
 
 ## TO-DO
 
-Docker for create db aerq and test_aerq
 Unit Test
-
-docker run --name demo-mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=aerq -d mysql:latest
