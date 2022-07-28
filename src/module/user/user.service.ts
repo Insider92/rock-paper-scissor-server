@@ -126,8 +126,7 @@ export class UserService {
   // Private Functions
   //-------------------------------------------------------------------------------------------------
 
-  // UNIT TEST
-  async _update(points: Points, userId: string): Promise<UserEntity> {
+  async _update(points: Points, userId: string) {
     const userEntity = await this.userRepository.findOne({
       where: { id: userId },
     });
@@ -142,6 +141,6 @@ export class UserService {
       id: userEntity.id,
       points: toBeUpdatedPoints,
     });
-    return await this.userRepository.save(pointsToBeUpdated);
+    await this.userRepository.save(pointsToBeUpdated);
   }
 }

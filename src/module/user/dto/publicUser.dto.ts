@@ -13,7 +13,6 @@ export class PublicUserDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  @IsAlphanumeric()
   username: string;
   @ApiProperty()
   @IsNumber()

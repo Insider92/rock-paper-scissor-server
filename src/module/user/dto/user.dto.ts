@@ -5,7 +5,6 @@ export class UserDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  @IsAlphanumeric()
   username: string;
   @ApiProperty()
   @IsNotEmpty()

@@ -142,15 +142,11 @@ export class MatchController {
     @Body() match: ChallengeHumanDto,
     @Req() req: any,
   ): Promise<MatchDto> {
-    if (match.challengedUser.toString() === '') {
+    if (match.challengedUser.toString() === req.user.id.toString()) {
       throw new HttpException(
-        `There should be a valid user id not an empty user id string`,
+        `You can't challenge yourself`,
         HttpStatus.NOT_FOUND,
       );
-    }
-
-    if (match.challengedUser.toString() === req.user.id.toString()) {
-      throw new HttpException(`You can't challenge yourself`, 404);
     }
 
     const choiceExists = await this.matchService.choiceExists(

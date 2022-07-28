@@ -11,7 +11,7 @@ import { EntityManager } from 'typeorm';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const { serverPort, serverPrefix, nodeEnv } = config.get('server');
-  const entityManager = app.get(EntityManager)
+  const entityManager = app.get(EntityManager);
 
   const logger = app.get(Logger);
   app.useLogger(logger);
@@ -35,11 +35,9 @@ async function bootstrap() {
   logger.log(`Node Version: '${process.version}'`);
   logger.log(`NODE_ENV: '${nodeEnv}'`);
 
-  console.log(process.env.DB_ENV)
-
-  if(process.env.DB_ENV !== 'test'){
-    const choices = new initChoices(logger)
-    await choices.up(entityManager)
+  if (process.env.DB_ENV !== 'test') {
+    const choices = new initChoices(logger);
+    await choices.up(entityManager);
   }
 }
 bootstrap();
