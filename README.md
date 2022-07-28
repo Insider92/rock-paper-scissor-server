@@ -105,7 +105,7 @@ $ curl
 
 ```
 
-The token is valid for 3600s (1h) - we will use this token aus authorization in the next examples
+The token is valid for 3600s (1h) - we will use this token as authorization in the next examples
 
 ### Play against computer
 
