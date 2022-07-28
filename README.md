@@ -39,7 +39,9 @@ $ docker-compose up
 $ docker-compose up mysql
 $ npm start
 ```
-The server will be started with both methods and will listen on ```http://localhost:3001```
+The server will be started with both methods and will listen on ```http://localhost:3001``` <br>
+**Note: If you start the app with ```docker-compose up``` on a windows os and vscode the start up for nest is pretty slow, please just wait** <br>
+See https://stackoverflow.com/questions/70452051/nestjs-cli-very-slow-in-docker-container-on-windows-with-visual-studio-code for information
 
 ## Test
 
