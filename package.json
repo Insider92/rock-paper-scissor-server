@@ -87,7 +87,8 @@
   "jest": {
     "moduleFileExtensions": [
       "json",
-      "ts"
+      "ts",
+      "js"
     ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
