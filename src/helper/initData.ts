@@ -9,7 +9,7 @@ export class initChoices {
       'SELECT COUNT(*) AS COUNT FROM choice;',
     );
 
-    // there are already init choices
+    // there are already choices initialized
     if (count[0].COUNT > 0) {
       return;
     }

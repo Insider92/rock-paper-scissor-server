@@ -38,13 +38,10 @@ export class AuthCommand {
     })
     email: string,
   ) {
-
-    const emailReg =  /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-    if(emailReg.test(email)){
-      throw new HttpException(
-        `Email is not valid`,
-        HttpStatus.UNAUTHORIZED,
-      );
+    const emailReg =
+      /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+    if (!emailReg.test(email)) {
+      throw new HttpException(`Email is not valid`, HttpStatus.UNAUTHORIZED);
     }
     console.log(
       await this.authService.register({

@@ -258,7 +258,6 @@ export class MatchService {
     return await this.choiceService.getRandomChoice();
   }
 
-  // UNIT TEST
   async _getMatchResult(
     challengerChoice: string,
     challengedChoice: string,
