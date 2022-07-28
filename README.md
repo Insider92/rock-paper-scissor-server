@@ -180,32 +180,13 @@ $ curl
     "result": "tbd"
 }
 
-# user 2 can now see the challenge with choice paper 
+# user 2 can now see the challenge
 $ curl 
 --request GET 'http://localhost:3001/aerq/v1/match/challenges' \
 --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlVzZXIyIiwiaWF0IjoxNjU5MDA2ODE1LCJleHAiOjE2NTkwMTA0MTV9.kRthD7gHfIt2ka2-6XntztDrSknxS5MNy4lKOPX4vqs'
 
-# user 2 wins against user 1
-{
-    "id": "3c55e2f0-f737-4ccf-bfaf-6920668be98f",
-    "result": "challengedWin",
-    "challengedChoice": {
-        "id": "508c501e-8632-4aff-8d26-f20a85868e0b",
-        "createdAt": "2022-07-27T22:25:51.608Z",
-        "updatedAt": "2022-07-27T22:25:51.608Z",
-        "deletedAt": null,
-        "name": "Paper"
-    },
-    "challengerChoice": {
-        "id": "c907bbd9-f4f0-4344-a72a-ba58031e057d",
-        "createdAt": "2022-07-27T22:25:51.576Z",
-        "updatedAt": "2022-07-27T22:25:51.576Z",
-        "deletedAt": null,
-        "name": "Rock"
-    }
-}
 
-# user 2 can answer the challenge
+# user 2 can answer the challenge with choice paper 
 $ curl
 --request PUT 'http://localhost:3001/aerq/v1/match/3c55e2f0-f737-4ccf-bfaf-6920668be98f' \
 --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlVzZXIyIiwiaWF0IjoxNjU5MDA2ODE1LCJleHAiOjE2NTkwMTA0MTV9.kRthD7gHfIt2ka2-6XntztDrSknxS5MNy4lKOPX4vqs' \
